@@ -12,6 +12,12 @@
   }
 }
 
+@media screen and (min-width: 1000px) {
+  .grid {
+    height: 100vmax;
+  }
+}
+
 p-card {
   span {
     cursor: pointer
