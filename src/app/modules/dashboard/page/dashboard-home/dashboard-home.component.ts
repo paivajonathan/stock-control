@@ -2,6 +2,7 @@ import { MessageService } from 'primeng/api';
 import { Component, OnInit } from '@angular/core';
 import { ProductsService } from 'src/app/services/products/products.service';
 import { GetAllProductsResponse } from 'src/app/models/interfaces/products/response/GetAllProductsResponse';
+import { ProductsDataTransferService } from 'src/app/shared/services/products/products-data-transfer.service';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -14,6 +15,7 @@ export class DashboardHomeComponent implements OnInit {
   constructor(
     private productService: ProductsService,
     private messageService: MessageService,
+    private productsDataTransferService: ProductsDataTransferService,
   ) { }
 
   ngOnInit(): void {
@@ -27,7 +29,7 @@ export class DashboardHomeComponent implements OnInit {
         next: (response) => {
           if (response.length > 0) {
             this.productsList = response;
-            console.log(this.productsList);
+            this.productsDataTransferService.setProductsData(this.productsList);
           }
         },
         error: (error) => {
