@@ -4,22 +4,20 @@
   background-position: center;
   background-repeat: no-repeat;
   height: 100vmin;
+
+  p-card {
+    span {
+      cursor: pointer
+    }
+
+    input {
+      width: 100%;
+    }
+  }
 }
 
 @media screen and (min-width: 1400px) {
   .grid {
     background-position: top;
-  }
-}
-
-@media screen and (min-width: 1000px) {
-  .grid {
-    height: 100vmax;
-  }
-}
-
-p-card {
-  span {
-    cursor: pointer
   }
 }
