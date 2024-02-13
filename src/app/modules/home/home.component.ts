@@ -34,7 +34,7 @@ export class HomeComponent implements OnDestroy {
     private cookieService: CookieService,
     private messageService: MessageService,
     private router: Router,
-  ) {}
+  ) { }
 
   onSubmitLoginForm(): void {
     if (this.loginForm.value && this.loginForm.valid) {
