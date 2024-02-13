@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { MessageService } from 'primeng/api';
 import { Subject, takeUntil } from 'rxjs';
-import { SignupUserRequest } from 'src/app/models/interfaces/user/SignupUserRequest';
-import { AuthRequest } from 'src/app/models/interfaces/user/auth/AuthRequest';
+import { SignupUserRequest } from 'src/app/models/interfaces/user/signup/request/SignupUserRequest';
+import { AuthRequest } from 'src/app/models/interfaces/user/auth/request/AuthRequest';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
