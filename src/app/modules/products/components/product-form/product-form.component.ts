@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { GetCategoriesResponse } from 'src/app/models/interfaces/categories/response/GetCategoriesResponse';
 import { CreateProductRequest } from 'src/app/models/interfaces/products/request/CreateProductRequest';
 import { ProductsService } from 'src/app/services/products/products.service';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { EventAction } from 'src/app/models/interfaces/products/event/EventAction';
 import { GetAllProductsResponse } from 'src/app/models/interfaces/products/response/GetAllProductsResponse';
 import { ProductEvent } from 'src/app/models/enums/products/ProductEvent';
@@ -43,7 +43,14 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     price: ['', Validators.required],
     description: ['', Validators.required],
     amount: [0, Validators.required],
+    category_id: ['', Validators.required],
   });
+  saleProductForm = this.formBuilder.group({
+    amount: [0, Validators.required],
+    product_id: ['', Validators.required],
+  });
+  selectedSaleProduct!: GetAllProductsResponse;
+  renderDropdown = false;
 
   addProductAction = ProductEvent.ADD_PRODUCT_EVENT;
   editProductAction = ProductEvent.EDIT_PRODUCT_EVENT;
@@ -55,24 +62,19 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private router: Router,
-    public ref: DynamicDialogConfig,
+    public config: DynamicDialogConfig,
+    public ref: DynamicDialogRef,
     private productsDataTransferService: ProductsDataTransferService
   ) {}
 
   ngOnInit(): void {
-    this.productAction = this.ref.data;
-    this.getAllCategories();
+    this.productAction = this.config.data;
 
-    if (
-      this.productAction?.event?.action === this.editProductAction &&
-      this.productAction.productsData
-    ) {
-      this.getSelectedProductData(this.productAction?.event?.id as string);
-    }
-
-    if (this.productAction?.event?.action === this.saleProductAction) {
+    if (this.productAction?.event?.action === this.saleProductAction)
       this.getProductsData();
-    }
+
+    this.getAllCategories();
+    this.renderDropdown = true;
   }
 
   getAllCategories(): void {
@@ -83,6 +85,14 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         next: (response) => {
           if (response.length > 0) {
             this.categoriesData = response;
+            if (
+              this.productAction?.event?.action === this.editProductAction &&
+              this.productAction?.productsData
+            ) {
+              this.getSelectedProductData(
+                this.productAction?.event?.id as string
+              );
+            }
           }
         },
         error: (error) => {
@@ -98,7 +108,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         price: this.addProductForm.value.price as string,
         description: this.addProductForm.value.description as string,
         category_id: this.addProductForm.value.category_id as string,
-        amount: Number(this.addProductForm.value.amount),
+        amount: this.addProductForm.value.amount as number,
       };
 
       this.productsService
@@ -142,6 +152,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         description: this.editProductForm.value.description as string,
         product_id: this.productAction?.event?.id as string,
         amount: this.editProductForm.value.amount as number,
+        category_id: this.editProductForm.value.category_id as string,
       };
 
       this.productsService
@@ -165,8 +176,10 @@ export class ProductFormComponent implements OnInit, OnDestroy {
               life: 2500,
             });
           },
+          complete: () => {
+            this.ref.close();
+          },
         });
-
       this.editProductForm.reset();
     }
   }
@@ -186,6 +199,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           price: this.selectedProductData?.price,
           amount: this.selectedProductData?.amount,
           description: this.selectedProductData?.description,
+          category_id: this.selectedProductData?.category?.id
         });
       }
     }
